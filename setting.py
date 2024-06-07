@@ -3,6 +3,7 @@ class Setting:
     def __init__(self) -> None:
         # General Setting
         self.score = 0
+        self.score_shoot = False
         self.selected_x = 100
         self.selected_y = 100
         self.screen_width = 1200

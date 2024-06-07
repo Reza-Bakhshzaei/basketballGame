@@ -30,14 +30,15 @@ class Game:
     def _checkbool(self):
         if self.setting.active_shoot:
             self.ball.shoot()
-        if self.setting.active_up and self.setting.selected_y < self.screen.get_height()-250:
-            self.setting.selected_y += 5
-        if self.setting.active_down and self.setting.selected_y > 100:
-            self.setting.selected_y -= 5
-        if self.setting.active_right and self.setting.selected_x < self.screen.get_width():
-            self.setting.selected_x += 5
-        if self.setting.active_left and self.setting.selected_x > 100:
-            self.setting.selected_x -= 5
+        if not self.setting.active_one_shoot:
+            if self.setting.active_up and self.setting.selected_y < self.screen.get_height()-250:
+                self.setting.selected_y += 5
+            if self.setting.active_down and self.setting.selected_y > 100:
+                self.setting.selected_y -= 5
+            if self.setting.active_right and self.setting.selected_x < self.screen.get_width():
+                self.setting.selected_x += 5
+            if self.setting.active_left and self.setting.selected_x > 100:
+                self.setting.selected_x -= 5
 
     def _checkEvents(self):
         for event in pygame.event.get():
@@ -60,6 +61,7 @@ class Game:
             self.setting.active_left = True
         elif event.key == pygame.K_SPACE:
             self.setting.active_shoot = True
+            self.setting.active_one_shoot = True
         elif event.key == pygame.K_q:
             self.setting.active_game = False
 

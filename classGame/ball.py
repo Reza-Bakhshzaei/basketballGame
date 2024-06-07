@@ -33,19 +33,30 @@ class Ball(Sprite):
         self.setting.speed_shoot = 0
         self.setting.board_x = random.randint(400, 1100)
         self.setting.active_shoot = False
+        self.setting.active_one_shoot = False
         self.setting.index_ball = 0
         self.setting.selected_x = 100
         self.setting.selected_y = 100
+        self.setting.score_shoot = False
 
     def shoot(self):
-        self.rect = self.setting.road_ball[self.setting.index_ball]
-        if self.setting.board_x < self.rect[0] < self.setting.board_x + self.setting.ball_width and 420 < self.rect[1] < 440:
+        if not self.setting.score_shoot:
+            self.rect = self.setting.road_ball[self.setting.index_ball]
+        elif self.rect[1] < 600:
+            self.rect = (self.rect[0], self.rect[1]+5)
+        else:
+            self.reset_setting()
+            
+        if self.setting.board_x + 10 < self.rect[0] < self.setting.board_x + self.setting.ball_width + 10 and 435 < self.rect[1] < 440 and not self.setting.score_shoot:
             self.setting.score += 10
+            self.setting.score_shoot = True
+        
+        
+            
+        if self.setting.index_ball == len(self.setting.road_ball) - 1:
             self.reset_setting()
-        elif self.setting.index_ball == len(self.setting.road_ball) - 1:
-            self.reset_setting()
-
-        self.setting.index_ball += 1
+        if not self.setting.score_shoot:
+            self.setting.index_ball += 1
 
     def draw_ball(self):
         self.screen.blit(self.ball_img, self.rect)
