@@ -4,6 +4,8 @@ class Setting:
         # General Setting
         self.score = 0
         self.score_shoot = False
+        self.game_finish = False
+        self.ball_lose = 0
         self.selected_x = 100
         self.selected_y = 100
         self.screen_width = 1200

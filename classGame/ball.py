@@ -50,10 +50,10 @@ class Ball(Sprite):
         if self.setting.board_x + 10 < self.rect[0] < self.setting.board_x + self.setting.ball_width + 10 and 435 < self.rect[1] < 440 and not self.setting.score_shoot:
             self.setting.score += 10
             self.setting.score_shoot = True
-        
-        
+                
             
         if self.setting.index_ball == len(self.setting.road_ball) - 1:
+            self.setting.ball_lose += 1
             self.reset_setting()
         if not self.setting.score_shoot:
             self.setting.index_ball += 1

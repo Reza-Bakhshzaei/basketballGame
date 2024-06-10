@@ -4,6 +4,7 @@ from classGame.board import Board
 from classGame.ball import Ball
 from classGame.player import Player
 from classGame.button import Button
+from classGame.finishGame import Finished
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 20)
         self.button = Button(self, "Play")
+        self.finisher = Finished(self)
 
     def runGame(self):
         while self.setting.active_game:
@@ -38,6 +40,7 @@ class Game:
     def _checkbool(self):
         if self.setting.active_shoot:
             self.ball.shoot()
+            
         if not self.setting.active_one_shoot:
             if self.setting.active_up and self.setting.selected_y < self.screen.get_height()-250:
                 self.setting.selected_y += 5
@@ -77,6 +80,12 @@ class Game:
             self.setting.active_one_shoot = True
         elif event.key == pygame.K_q:
             self.setting.active_game = False
+        elif event.key == pygame.K_r and not self.setting.active_button:
+            self.setting.active_button = True
+            self.setting.game_finish = False
+            self.setting.ball_lose = 0
+            self.setting.score = 0
+            
 
     def _check_keyup_event(self, event):
         if event.key == pygame.K_UP:
@@ -88,22 +97,28 @@ class Game:
         elif event.key == pygame.K_LEFT:
             self.setting.active_left = False
 
-    def _update(self):
-        
-        if self.setting.active_button:
+    def _update(self): 
+        if self.setting.active_button and not self.setting.game_finish:
             self.screen.blit(self.bg, self.bg_rect)
             self.board.draw_board()
             self.player.draw_player()
             self.ball.draw_helper()
             self.ball.draw_ball()
             self._show_score()
+            if self.setting.ball_lose >=3 or self.setting.score > 90:
+                self.setting.game_finish = True      
         else:
-            self.button.draw_button()
+            if self.setting.game_finish:
+                self.finisher.draw_image()
+            else:
+                self.button.draw_button()
         pygame.display.flip()
 
     def _show_score(self):
         self.screen.blit(self.font.render(
             f"Score: {self.setting.score}", True, (255, 0, 0)), (10, 10))
+        self.screen.blit(self.font.render(
+            f"lose shoot: {self.setting.ball_lose}", True, (255, 0, 0)), (900, 10))
 
 
 if __name__ == "__main__":
