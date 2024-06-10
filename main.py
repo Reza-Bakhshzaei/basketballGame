@@ -3,6 +3,7 @@ from setting import Setting
 from classGame.board import Board
 from classGame.ball import Ball
 from classGame.player import Player
+from classGame.button import Button
 
 
 class Game:
@@ -18,6 +19,7 @@ class Game:
         self.player = Player(self)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 20)
+        self.button = Button(self, "Play")
 
     def runGame(self):
         while self.setting.active_game:
@@ -27,6 +29,12 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
+    def check_button(self, mouse_pos):
+        buttin_click = self.button.rect.collidepoint(mouse_pos)
+        if buttin_click and not self.setting.active_button:
+            self.setting.active_button = True
+            pygame.mouse.set_visible(False)
+        
     def _checkbool(self):
         if self.setting.active_shoot:
             self.ball.shoot()
@@ -44,11 +52,16 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.setting.active_game = False
+                
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
 
             elif event.type == pygame.KEYUP:
                 self._check_keyup_event(event)
+                
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self.check_button(mouse_pos)
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_UP:
@@ -76,12 +89,16 @@ class Game:
             self.setting.active_left = False
 
     def _update(self):
-        self.screen.blit(self.bg, self.bg_rect)
-        self.board.draw_board()
-        self.player.draw_player()
-        self.ball.draw_helper()
-        self.ball.draw_ball()
-        self._show_score()
+        
+        if self.setting.active_button:
+            self.screen.blit(self.bg, self.bg_rect)
+            self.board.draw_board()
+            self.player.draw_player()
+            self.ball.draw_helper()
+            self.ball.draw_ball()
+            self._show_score()
+        else:
+            self.button.draw_button()
         pygame.display.flip()
 
     def _show_score(self):
